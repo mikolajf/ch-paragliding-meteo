@@ -1,5 +1,10 @@
 <script setup>
-defineProps({ title: String, de: String, en: String })
+import { computed } from 'vue'
+import { marked } from 'marked'
+
+const props = defineProps({ title: String, de: String, en: String })
+
+const enHtml = computed(() => marked(props.en || ''))
 </script>
 
 <template>
@@ -12,7 +17,7 @@ defineProps({ title: String, de: String, en: String })
       </div>
       <div>
         <h3 class="text-sm font-medium text-gray-500 mb-1">English</h3>
-        <p class="text-gray-800 whitespace-pre-line">{{ en }}</p>
+        <div class="text-gray-800 prose prose-sm" v-html="enHtml"></div>
       </div>
     </div>
   </section>
