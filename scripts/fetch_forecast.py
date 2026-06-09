@@ -51,7 +51,7 @@ def fetch_image(url, filename):
 def translate_with_gemini(text, api_key):
     """Translate German meteorological text to English using Gemini."""
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("models/gemini-1.5-flash-latest")
     prompt = (
         "Translate the following German weather forecast text to English. "
         "Preserve paragraph structure. Only output the translation, nothing else.\n\n"
