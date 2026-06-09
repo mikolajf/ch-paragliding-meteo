@@ -23,7 +23,8 @@ const tomorrow = computed(() => {
   return d.toISOString().slice(0, 10)
 })
 
-const dabsUrl = (label) => `${BASE}data/dabs_${label}.pdf`
+const dabsUrl = (date) =>
+  `https://www.skybriefing.com/de/dabs?p_p_id=ch_skyguide_ibs_portal_dabs_DabsUI&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=APP&p_p_cacheability=cacheLevelPage&_ch_skyguide_ibs_portal_dabs_DabsUI_v-resourcePath=%2FAPP%2Fconnector%2F0%2F2%2Fhref%2Fdabs-${date}.pdf`
 
 onMounted(async () => {
   try {
@@ -61,8 +62,8 @@ onMounted(async () => {
         <ForecastCard title="Weather Report" :de="forecast.weatherReport.de" :en="forecast.weatherReport.en" />
       </template>
 
-      <DabsPanel :title="`DABS Today (${today})`" :url="dabsUrl('today')" />
-      <DabsPanel :title="`DABS Tomorrow (${tomorrow})`" :url="dabsUrl('tomorrow')" />
+      <DabsPanel :title="`DABS Today (${today})`" :url="dabsUrl(today)" />
+      <DabsPanel :title="`DABS Tomorrow (${tomorrow})`" :url="dabsUrl(tomorrow)" />
     </main>
 
     <footer class="text-center text-xs text-gray-400 py-6">
