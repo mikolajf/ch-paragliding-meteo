@@ -63,6 +63,7 @@ def translate_with_gemini(text, api_key):
 
 def main():
     import os
+    from datetime import date, timedelta
 
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -96,6 +97,26 @@ def main():
 
     print("Fetching synoptic chart...")
     fetch_image(map_url, "synoptic_chart.png")
+
+    # Fetch DABS PDFs
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    dabs_base = (
+        "https://www.skybriefing.com/de/dabs?p_p_id=ch_skyguide_ibs_portal_dabs_DabsUI"
+        "&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=APP"
+        "&p_p_cacheability=cacheLevelPage"
+        "&_ch_skyguide_ibs_portal_dabs_DabsUI_v-resourcePath="
+    )
+    today = date.today()
+    for i, label in enumerate(["today", "tomorrow"]):
+        d = today + timedelta(days=i)
+        dabs_url = f"{dabs_base}%2FAPP%2Fconnector%2F0%2F2%2Fhref%2Fdabs-{d}.pdf"
+        print(f"Fetching DABS {label} ({d})...")
+        try:
+            resp = requests.get(dabs_url, timeout=30)
+            resp.raise_for_status()
+            (OUTPUT_DIR / f"dabs_{label}.pdf").write_bytes(resp.content)
+        except requests.HTTPError as e:
+            print(f"  Warning: DABS {label} not available ({e})")
 
     # Translate
     print("Translating weather report...")
