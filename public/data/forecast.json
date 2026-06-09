@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-06-09T07:35:00Z",
+  "version": "20260609_0735",
+  "weatherReport": {
+    "de": "Heute Montag ist es in der Deutschschweiz und im Wallis sonnig. Im Tessin und in Graubünden können sich am Nachmittag Quellwolken bilden, die vereinzelt zu Schauern führen.",
+    "en": "Today Monday it is sunny in German-speaking Switzerland and Valais. In Ticino and Graubünden, cumulus clouds may form in the afternoon, occasionally leading to showers."
+  },
+  "generalSituation": {
+    "de": "Ein Hochdruckgebiet über Mitteleuropa sorgt für ruhiges und sonniges Wetter. Die Nullgradgrenze liegt bei 4000 Metern.",
+    "en": "A high-pressure system over Central Europe ensures calm and sunny weather. The freezing level is at 4000 meters."
+  },
+  "synopticChartUrl": "data/synoptic_chart.png"
+}
