@@ -54,9 +54,7 @@ def translate_with_gemini(text, api_key):
     model = genai.GenerativeModel("gemini-2.5-flash-lite")
     prompt = (
         "Translate the following German weather forecast text to English. "
-        "Format days of the week as headings (## Monday, ## Tuesday, etc). "
-        "Do not use horizontal rules (---). Use bold for emphasis. "
-        "Only output the translation, nothing else.\n\n"
+        "Preserve paragraph structure. Only output the translation, nothing else.\n\n"
         f"{text}"
     )
     response = model.generate_content(prompt)
