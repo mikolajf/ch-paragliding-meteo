@@ -3,11 +3,11 @@
 import json
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
-from xml.etree import ElementTree
 
-import requests
 import google.generativeai as genai
+import requests
 
 BASE_URL = "https://www.meteoswiss.admin.ch/product/output"
 OUTPUT_DIR = Path("public/data")
@@ -24,15 +24,20 @@ def fetch_text(url):
     """Fetch xhtml and extract text content."""
     resp = requests.get(url, timeout=30)
     resp.raise_for_status()
-    # Parse as XML, extract all text
-    root = ElementTree.fromstring(resp.content)
-    texts = []
-    for elem in root.iter():
-        if elem.text and elem.text.strip():
-            texts.append(elem.text.strip())
-        if elem.tail and elem.tail.strip():
-            texts.append(elem.tail.strip())
-    return "\n".join(texts)
+
+    class TextExtractor(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.texts = []
+
+        def handle_data(self, data):
+            stripped = data.strip()
+            if stripped:
+                self.texts.append(stripped)
+
+    parser = TextExtractor()
+    parser.feed(resp.text)
+    return "\n".join(parser.texts)
 
 
 def fetch_image(url, filename):
@@ -77,7 +82,9 @@ def main():
     print(f"Synoptic map version: {gs_map_version}")
 
     # Fetch texts
-    wr_url = f"{BASE_URL}/weather-report/de/north/version__{wr_version}/textproduct_de.xhtml"
+    wr_url = (
+        f"{BASE_URL}/weather-report/de/north/version__{wr_version}/textproduct_de.xhtml"
+    )
     gs_url = f"{BASE_URL}/generalsituation/text/de/version__{gs_version}/textproduct_de.xhtml"
     map_url = f"{BASE_URL}/generalsituation/map/de/version__{gs_map_version}/generalsituation_frontmap_de.png"
 
@@ -115,7 +122,9 @@ def main():
     }
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUTPUT_DIR / "forecast.json").write_text(json.dumps(forecast, ensure_ascii=False, indent=2), encoding="utf-8")
+    (OUTPUT_DIR / "forecast.json").write_text(
+        json.dumps(forecast, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     print("Done! Output written to public/data/")
 
 
